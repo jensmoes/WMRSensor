@@ -9,7 +9,7 @@
 	"maturity": "stable",
 	"repository": {
 		"type": "git",
-		"source": "https://github.com/jensmoes/WMRSensors"
+		"source": "https://github.com/jensmoes/WMRSensor"
 	},
 	"defaults": {
 		"title": "WMR Sensors",
@@ -17,29 +17,50 @@
                 "source" : "http://localhost/current.xml",
                 "scale" : "℃",
                 "sensorType" : "",
-                "pollInterval" : 0
+                "pollInterval" : 0,
+                "midnightRainLevel" : 0.0
 	},
 	"schema": {
 		"type": "object",
 		"properties": {
                     "sensorType": {
                             "type": "string",
-                            "enum": ["temperature", "rain"],
-                            "default": "temperature",
+                            "enum": ["Temperature", "Rain", "Humidity", "Pressure"],
+                            "default": "",
                             "required": true
                     },
-                    
+                    "channel" : {
+                        "type": "string",
+                        "enum": ["indoor","outdoor","aux1","aux2","aux3"],
+                        "required" : true
+                    },
                     "source": { 
+                        "label": "Url serving the XML",
                         "type": "string",
                         "required": true
                     },
                     "scale": {
+                        "label": "Scale of measurement",
                         "type": "string",
                         "required": false
                     },
                     "pollInterval": {
+                        "label": "Poll interval in seconds",
                         "type": "integer",
                         "required": false
+                    },
+                    "battery": {
+                        "label": "Also create a battery sensor",
+                        "type": "boolean",
+                        "required": false
+                    },
+                    "midnightRainLevel": {
+                        "label": "Total rain amount since reset. Used to calculate todays rainfall",
+                        "type": "number",
+                        "required": false,
+                        "dependencies": {
+                            "sensorType": "Rain"
+                        }
                     }
                 }
 
@@ -47,9 +68,26 @@
 	"options": {
 		"fields": {
 			"sensorType": {
+                                "label": "Sensor type",
 				"type": "select"
-			}
-
-		}
+			},
+                        "channel": {
+                            "label": "Associated channel on the station",
+                            "type": "select"
+                        },
+                        "source": { 
+                            "label": "Url serving the XML"
+                        },
+                        "scale": {
+                            "label": "Scale of measurement"
+                        },
+                        "pollInterval": {
+                            "label": "Poll interval in seconds"
+                        },
+                        "battery": {
+                            "label": "Create a battery sensor"
+                        }
+                        
+                }
 	}
 }
