@@ -24,14 +24,10 @@ WMRSensor.prototype.init = function (config) {
     var self = this,
         icon = "flood",
         sensorType = this.config.sensorType,
-        battery =  "_",
         titleText = sensorType  + " " + this.id,
         scaleText = this.config.scale;
 
-        if(this.config.battery){
-            icon = "battery";
-            titleText = "Battery " + this.id;
-        }else if(sensorType === "Temperature"){
+        if(sensorType === "Temperature"){
             icon = "temperature";
         }else if(sensorType === "Rain"){
             icon = "flood";
@@ -70,8 +66,8 @@ WMRSensor.prototype.init = function (config) {
             deviceId: "WMRSensor" + "_" + this.config.sensorType + "_battery_" + this.id,
             defaults: {
                 metrics: {
-                    icon: icon,
-                    title: titleText,
+                    icon: "battery",
+                    title: "Battery " + this.id,
                     probeTitle: "Battery"
                 }
             },
@@ -151,7 +147,6 @@ WMRSensor.prototype.stop = function () {
 WMRSensor.prototype.update = function (vDev) {
     var self = this,
         url = this.config.source;
-        sensor = this.config.sensorType;
     
     if (url) {
         http.request({
@@ -165,7 +160,7 @@ WMRSensor.prototype.update = function (vDev) {
                 var data = null;
                 var batt = self.vDevBattId === vDev.id;
                 data = parseValue(response.data, self, batt);
-                if(!batt && sensor === "Rain"){
+                if(!batt && self.config.sensorType === "Rain"){
                     data -= self.config.midnightRainLevel;
                 }
                 if (data !== null) {
